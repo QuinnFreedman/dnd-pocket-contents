@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica&display=swap" rel="stylesheet"> 
+    <style tyle="text/css">
+        body {
+            display: flex;
+            justify-content: center;
+            font-family: "Georgia", "DejaVu Serif", "serif";
+            font-size: 110%;
+            line-height: 1.3;
+        }
+
+        div {
+            margin: 0;
+        }
+
+        h1 {
+            font-family: "IM Fell Double Pica";
+        }
+
+        label {
+            margin: 0;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            max-width: 500px;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            margin: 4px 0;
+        }
+
+        .row > * {
+            margin: 0 4px;
+        }
+
+        input {
+            margin: 0;
+        }
+
+        .fixed_width {
+            min-width: 130px;
+        }
+
+        .hideable {
+            transition: max-height .2s;
+            height: auto;
+            overflow: hidden;
+            max-height: 0px;
+        }
+
+        #result_table {
+            border-collapse: collapse;
+        }
+
+        #result_table td {
+            padding: 8px 0;
+            vertical-align: top;
+        }
+        
+        #result_table td:first-child {
+            padding-right: 4px;
+            vertical-align: top;
+        }
+
+        #result_table tr:not(:last-child) {
+            border-bottom: 1px solid #888888;
+        }
+
+        .color-square {
+            margin-top: 3px;
+            margin-right: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+        }
+
+        .color-square.mundane {
+            background-color: #AD7A58;
+        }
+        .color-square.minor_magical {
+            background-color: #6C78DD;
+        }
+        .color-square.precious {
+            background-color: #EAD979;
+            /* background-color: #ffec84; */
+        }
+        
+        .coin {
+            display: inline-block;
+            margin-right: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 99px;
+        }
+
+        .coin.gp {
+            background-color: #EAD979; /* gold; */
+        }
+        
+        .coin.sp {
+            background-color: silver;
+        }
+        
+        .coin.cp {
+            background-color: #AD7A58; /* brown; */
+        }
+
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="row">
+            <div>
+                <h1>What's it got in its pocketses?</h1>
+                <p>When the players in my D&amp;D game kill a goblin or find
+                    a sleeping villager, there's always someone who says "I 
+                    check its pockets. What do I find?" I usually didn't have
+                    an answer repared and got tired of letting my players down
+                    by punting and saying "Uhhh... there's nothing of value"
+                    or "There's 4 silver pieces," so I made this tool to
+                    generate random pocket contents (and other trinkets someone
+                    might be carying).
+                </p>
+                <p>Items range from mundane (purely for flavor) to minor magical
+                    items (potions or curriosities, not "real magic items"). 
+                    Some inspiration for items was taken from 
+                    <a href="https://www.reddit.com/r/DnD/comments/4j9p0w/d100_things_found_in_pockets/">these</a>
+                    <a href="http://dndspeak.com/2018/02/100-items-in-an-npcs-pockets/">three</a>
+                    <a href="https://www.dandwiki.com/wiki/5e_Trinkets">lists</a>,
+                    along with the PHB and DMG.
+                </p>
+            </div>
+        </div>
+        <div id="main_controls">
+            <div class="row">
+                <label for="master_level">Value</label>
+                <input type="range" min="0" max="3" value="1" step="1"
+                        id="master_level" />
+            </div>
+        </div>
+        <div class="row">
+            <input type="checkbox" id="show_advanced" />
+            <label for="show_advanced">Advanced</label>
+        </div>
+        <div id="advanced_controls">
+            <div class="row">
+                <label for="mundane_slider" class="fixed_width">Mundane</label>
+                <input type="range" min="0" max="1" value=".5" step="0.01"
+                        id="mundane_slider" />
+            </div>
+            <div class="row">
+                <label for="minor_magical_slider" class="fixed_width">Minor Magical</label>
+                <input type="range" min="0" max="1" value=".5" step="0.01"
+                        id="minor_magical_slider" />
+            </div>
+            <div class="row">
+                <label for="precious_slider" class="fixed_width">Precious</label>
+                <input type="range" min="0" max="1" value=".5" step="0.01"
+                        id="precious_slider" />
+            </div>
+            <div class="row">
+                <label for="num_items_slider" class="fixed_width">No. items</label>
+                <input type="range" min="1" max="5" value="2" step="1"
+                        id="num_items_slider" />
+            </div>
+            <div class="row">
+                <label for="cash_slider" class="fixed_width">Cash</label>
+                <input type="range" min="0" max="1" value=".5" step="0.01"
+                        id="cash_slider" />
+            </div>
+        </div>
+        <div class="row">
+            <input type="button" id="generate" value="What's in its pocketses?" />
+        </div>
+        <div class="row">
+            <table id="result_table">
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript" src="main.js"></script>
+</body>
+</html>
