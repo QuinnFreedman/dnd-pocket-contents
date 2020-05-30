@@ -1,5 +1,4 @@
 (() => {
-// const items = JSON.parse()
 
 function randomFromList(probabilityList) {
     const sum = probabilityList.reduce((a, b) => a + b, 0) 
@@ -18,12 +17,12 @@ function normalRandom(mean, stddev) {
     do {
         var U1 = Math.random()
         var U2 = Math.random()
-        V1 = 2*U1-1
-        V2 = 2*U2-1
-        S = V1*V1+V2*V2
+        V1 = 2 * U1-1
+        V2 = 2 * U2-1
+        S = V1 * V1 + V2 * V2
     } while(S >= 1)
-    if (S===0) return 0
-    return mean+stddev*(V1*Math.sqrt(-2*Math.log(S)/S))
+    if (S === 0) return 0
+    return mean + stddev * (V1 * Math.sqrt(-2 * Math.log(S) / S))
 }
 
 const masterSlider = document.querySelector("#master_level")
@@ -72,6 +71,7 @@ setMasterSliderTooltip()
 
 fetch("items.json")
     .then((response) => response.json())
+    .then((items) => ({ unused: items, used: {} }))
     .then((items) => {
         document.querySelector("#generate")
             .addEventListener("click", () => generateResult(items))
@@ -80,6 +80,7 @@ fetch("items.json")
 
 function generateResult(items) {
     let mundaneFraction, magicalFraction, preciousFraction, numItems, cashValue
+    // Pick fractions of different item types
     if (!advancedCheck.checked) {
         switch (parseInt(masterSlider.value)) {
             case 0: {
@@ -134,24 +135,40 @@ function generateResult(items) {
         const cashSliderValue = parseFloat(cashSlider.value) * 10000
         cashValue = Math.round(normalRandom(cashSliderValue, cashSliderValue / 6)) 
     }
+
+    // Pick actual items
     const outputItems = []
     for (let i = 0; i < numItems; i++) {
         const listIndex = randomFromList([
             mundaneFraction, magicalFraction, preciousFraction])
         const listName = ["mundane", "minor_magical", "precious"][listIndex]
-        const itemList = items[listName]
+        const itemList = items.unused[listName]
+        /*
         let index
         do {
             index = Math.floor(Math.random() * itemList.length)
         } while (outputItems.find((x) => x.index === index))
         const item = itemList[index]
+        */
+        const index = Math.floor(Math.random() * itemList.length)
+        const item = itemList[index]
+        items.unused[listName].splice(index, 1)
+        if (!(listName in items.used)) {
+            items.used[listName] = []
+        }
+        items.used[listName].push(item)
+        if (items.unused[listName].length === 0) {
+            items.unused[listName] = items.used[listName]
+            items.used[listName] = []
+        }
+        
         outputItems.push({
-            index,
             description: item,
             category: listName
         })
     }
 
+    // Pick cash coins
     if (cashValue > 0) {
         const denominations = [
             {value: 100, label: "gp"},
